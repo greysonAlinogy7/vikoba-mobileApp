@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vikoba_mobileapp/screen/splashscreen.dart';
+import 'package:vikoba_mobileapp/screen/registration.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const Splashscreen(),
+      home: const Registration(),
     );
   }
 }
