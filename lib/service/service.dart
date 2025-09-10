@@ -5,31 +5,34 @@ import 'package:http/http.dart' as http;
 import '../model/User.dart';
 
 class Service {
-  // Constant for the API base URL
-  static const String _baseUrl = 'http://localhost:8080/api/users';
+  // API base URL (change depending on platform)
+  static const String _baseUrl = 'http://172.16.130.247:8080/api/users';
+  // For Android Emulator. Use 'http://localhost:8080/api/users' if running Flutter web or iOS Simulator
 
-  Future<User> createUser(Map<String, dynamic> userData) async {
+  /// Create a new user
+  Future<User?> createUser(Map<String, dynamic> userData) async {
     final url = Uri.parse(_baseUrl);
+
     try {
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
-        body: json.encode(userData), // Encode the user data as JSON
+        body: jsonEncode(userData), // Encode the user data as JSON
       );
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 201 || response.statusCode == 200) {
         // Parse the response body into a User object
-        final jsonResponse = json.decode(response.body);
+        final jsonResponse = jsonDecode(response.body);
         return User.fromJson(jsonResponse);
       } else {
-        throw Exception(
+        print(
           'Failed to create user: ${response.statusCode} - ${response.body}',
         );
+        return null; // Return null instead of throwing directly
       }
     } catch (error) {
-      // Log the error and rethrow it for the caller to handle
       print('Error creating user: $error');
-      rethrow; // Allows the caller to handle the error
+      return null; // Return null so caller can handle gracefully
     }
   }
 }

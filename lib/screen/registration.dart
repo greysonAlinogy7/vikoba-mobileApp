@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:vikoba_mobileapp/model/User.dart';
 import 'package:vikoba_mobileapp/screen/LoginScreen.dart';
+import 'package:vikoba_mobileapp/service/Service.dart';
 
 class Registration extends StatefulWidget {
   const Registration({super.key});
@@ -10,248 +12,226 @@ class Registration extends StatefulWidget {
 }
 
 class _RegistrationState extends State<Registration> {
-  final TextEditingController _emailController = new TextEditingController();
-  final TextEditingController _usernameController = new TextEditingController();
-  final TextEditingController _phoneNumberController =
-      new TextEditingController();
-  final TextEditingController _nidaNumberController =
-      new TextEditingController();
-  final TextEditingController _registrationController =
-      new TextEditingController();
-  final TextEditingController _passwordController = new TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _phoneNumberController = TextEditingController();
+  final TextEditingController _nidaNumberController = TextEditingController();
+  final TextEditingController _registrationController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
+  final Service _service = Service();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _usernameController.dispose();
+    _phoneNumberController.dispose();
+    _nidaNumberController.dispose();
+    _registrationController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  /// Helper to reduce boilerplate for input decoration
+  InputDecoration _inputDecoration(String label, String hint, IconData icon) {
+    return InputDecoration(
+      labelText: label,
+      hintText: hint,
+      prefixIcon: Icon(icon),
+      border: const OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(9)),
+      ),
+    );
+  }
+
+  Future<void> _registerUser() async {
+    if (_formKey.currentState!.validate()) {
+      final userData = {
+        "email": _emailController.text,
+        "username": _usernameController.text,
+        "phone": _phoneNumberController.text,
+        "nida": _nidaNumberController.text,
+        "regNo": _registrationController.text,
+        "password": _passwordController.text,
+      };
+
+      final User? result = await _service.createUser(userData);
+
+      if (result != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("✅ Registration successful")),
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const Loginscreen()),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("❌ Registration failed. Try again.")),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Center(
-                    child: Container(
-                      height: 200,
-                      width: 200,
-                      child: Image.asset("assets/signup.png"),
-                    ),
-                  ),
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: <Widget>[
+              // Logo
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: SizedBox(
+                  height: 150,
+                  width: 150,
+                  child: Image.asset("assets/signup.png"),
                 ),
-                Padding(
-                  padding: EdgeInsets.all(16),
-                  child: TextFormField(
-                    controller: _emailController,
-                    validator: MultiValidator([
-                      RequiredValidator(errorText: "Enter your Email"),
-                      MinLengthValidator(
-                        10,
-                        errorText: "include @ sign in your input text",
-                      ),
-                    ]),
-                    decoration: InputDecoration(
-                      hintText: "Enter email",
-                      labelText: "Email",
-                      prefixIcon: Icon(Icons.email),
-                      errorStyle: TextStyle(fontSize: 18.0),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red),
-                        borderRadius: BorderRadius.all(Radius.circular(9)),
-                      ),
-                    ),
-                  ),
-                ),
+              ),
 
-                Padding(
-                  padding: EdgeInsets.all(16),
-                  child: TextFormField(
-                    controller: _usernameController,
-                    validator: MultiValidator([
-                      RequiredValidator(errorText: "Enter the username"),
-                      MinLengthValidator(
-                        10,
-                        errorText: "less than ten characters",
-                      ),
-                    ]),
-                    decoration: InputDecoration(
-                      hintText: "Enter username",
-                      labelText: "username",
-                      prefixIcon: Icon(Icons.person),
-                      errorStyle: TextStyle(fontSize: 18.0),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red),
-                        borderRadius: BorderRadius.all(Radius.circular(9)),
-                      ),
-                    ),
-                  ),
+              // Email
+              TextFormField(
+                controller: _emailController,
+                validator: MultiValidator([
+                  RequiredValidator(errorText: "Enter your Email"),
+                  EmailValidator(errorText: "Enter a valid email"),
+                ]),
+                decoration: _inputDecoration(
+                  "Email",
+                  "Enter email",
+                  Icons.email,
                 ),
+              ),
+              const SizedBox(height: 16),
 
-                Padding(
-                  padding: EdgeInsets.all(16),
-                  child: TextFormField(
-                    controller: _phoneNumberController,
-                    validator: MultiValidator([
-                      RequiredValidator(errorText: "Enter the phone number"),
-                      MinLengthValidator(10, errorText: "Enter ten numbers"),
-                      PatternValidator(
-                        r'(^[0,9]{10}$)',
-                        errorText: 'enter vaid mobile number',
-                      ),
-                    ]),
-                    decoration: InputDecoration(
-                      hintText: "Enter phone number",
-                      labelText: "phone number",
-                      prefixIcon: Icon(Icons.phone),
-                      errorStyle: TextStyle(fontSize: 18.0),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red),
-                        borderRadius: BorderRadius.all(Radius.circular(9)),
-                      ),
-                    ),
-                  ),
+              // Username
+              TextFormField(
+                controller: _usernameController,
+                validator: MultiValidator([
+                  RequiredValidator(errorText: "Enter the username"),
+                  MinLengthValidator(4, errorText: "At least 4 characters"),
+                ]),
+                decoration: _inputDecoration(
+                  "Username",
+                  "Enter username",
+                  Icons.person,
                 ),
+              ),
+              const SizedBox(height: 16),
 
-                Padding(
-                  padding: EdgeInsets.all(16),
-                  child: TextFormField(
-                    controller: _nidaNumberController,
-                    validator: MultiValidator([
-                      RequiredValidator(errorText: "Enter the Nida number"),
-                      MinLengthValidator(
-                        10,
-                        errorText: "Enter fifteen characters",
-                      ),
-                    ]),
-                    decoration: InputDecoration(
-                      hintText: "Nida number",
-                      labelText: "Nida",
-                      prefixIcon: Icon(Icons.perm_identity),
-                      errorStyle: TextStyle(fontSize: 18.0),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red),
-                        borderRadius: BorderRadius.all(Radius.circular(9)),
-                      ),
-                    ),
+              // Phone Number
+              TextFormField(
+                controller: _phoneNumberController,
+                keyboardType: TextInputType.phone,
+                validator: MultiValidator([
+                  RequiredValidator(errorText: "Enter the phone number"),
+                  PatternValidator(
+                    r'^[0-9]{10}$',
+                    errorText: 'Enter a valid 10-digit mobile number',
                   ),
+                ]),
+                decoration: _inputDecoration(
+                  "Phone number",
+                  "Enter phone number",
+                  Icons.phone,
                 ),
+              ),
+              const SizedBox(height: 16),
 
-                Padding(
-                  padding: EdgeInsets.all(16),
-                  child: TextFormField(
-                    controller: _registrationController,
-                    validator: MultiValidator([
-                      RequiredValidator(
-                        errorText: "Enter the registration number",
-                      ),
-                      MinLengthValidator(
-                        10,
-                        errorText: "enter twelve charachers",
-                      ),
-                    ]),
-                    decoration: InputDecoration(
-                      hintText: "Enter REG NO",
-                      labelText: "registration",
-                      prefixIcon: Icon(Icons.numbers),
-                      errorStyle: TextStyle(fontSize: 18.0),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red),
-                        borderRadius: BorderRadius.all(Radius.circular(9)),
-                      ),
-                    ),
-                  ),
+              // NIDA Number
+              TextFormField(
+                controller: _nidaNumberController,
+                validator: MultiValidator([
+                  RequiredValidator(errorText: "Enter the NIDA number"),
+                  MinLengthValidator(15, errorText: "Must be 15 characters"),
+                  MaxLengthValidator(15, errorText: "Must be 15 characters"),
+                ]),
+                decoration: _inputDecoration(
+                  "NIDA",
+                  "Enter NIDA number",
+                  Icons.perm_identity,
                 ),
-                Padding(
-                  padding: EdgeInsets.all(16),
-                  child: TextFormField(
-                    controller: _passwordController,
-                    validator: MultiValidator([
-                      RequiredValidator(errorText: "Enter the valid password"),
-                      MinLengthValidator(
-                        10,
-                        errorText:
-                            "password should contain upper case and special character",
-                      ),
-                    ]),
-                    decoration: InputDecoration(
-                      hintText: "password",
-                      labelText: "password",
-                      prefixIcon: Icon(Icons.lock),
-                      errorStyle: TextStyle(fontSize: 18.0),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red),
-                        borderRadius: BorderRadius.all(Radius.circular(9)),
-                      ),
-                    ),
-                  ),
+              ),
+              const SizedBox(height: 16),
+
+              // Registration Number
+              TextFormField(
+                controller: _registrationController,
+                validator: MultiValidator([
+                  RequiredValidator(errorText: "Enter the registration number"),
+                  MinLengthValidator(12, errorText: "Must be 12 characters"),
+                  MaxLengthValidator(12, errorText: "Must be 12 characters"),
+                ]),
+                decoration: _inputDecoration(
+                  "Registration",
+                  "Enter REG NO",
+                  Icons.numbers,
                 ),
-                Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        "I have account",
-                        style: TextStyle(fontSize: 16, color: Colors.black),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute<void>(
-                              builder: (context) => const Loginscreen(),
-                            ),
-                          );
-                        },
-                        child: Text(
-                          "Login",
-                          style: TextStyle(color: Colors.blue),
+              ),
+              const SizedBox(height: 16),
+
+              // Password
+              TextFormField(
+                controller: _passwordController,
+                obscureText: true,
+                validator: MultiValidator([
+                  RequiredValidator(errorText: "Enter a valid password"),
+                  PatternValidator(
+                    r'^(?=.*[A-Z])(?=.*[!@#\$&*~]).{8,}$',
+                    errorText:
+                        "Password must have uppercase, special char & 8+ chars",
+                  ),
+                ]),
+                decoration: _inputDecoration(
+                  "Password",
+                  "Enter password",
+                  Icons.lock,
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Already have account?
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  const Text(
+                    "I have an account",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const Loginscreen(),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Container(
-                      child: SizedBox(
-                        width: 700,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              print("form validated");
-                            }
-                          },
-
-                          child: Text(
-                            "Register",
-                            style: TextStyle(fontSize: 15),
-                          ),
-                        ),
-                      ),
+                      );
+                    },
+                    child: const Text(
+                      "Login",
+                      style: TextStyle(color: Colors.blue),
                     ),
                   ),
-                ),
+                ],
+              ),
 
-                Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(height: 50, width: 50, child: Text("data")),
-                        Container(height: 50, width: 50, child: Text("data")),
-                        Container(height: 50, width: 50, child: Text("data")),
-                      ],
-                    ),
+              // Register Button
+              SizedBox(
+                width: double.infinity, // full width
+                child: ElevatedButton(
+                  onPressed: _registerUser,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    textStyle: const TextStyle(fontSize: 16),
                   ),
+                  child: const Text("Register"),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
