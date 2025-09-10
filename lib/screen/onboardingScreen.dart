@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vikoba_mobileapp/model/SliderModel.dart';
+import 'package:vikoba_mobileapp/screen/LoginScreen.dart';
 
 class Onboardingscreen extends StatefulWidget {
   const Onboardingscreen({super.key});
@@ -91,6 +92,10 @@ class _OnboardingscreenState extends State<Onboardingscreen> {
                     curve: Curves.easeIn,
                   );
                 }
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => Loginscreen()),
+                );
               },
               child: Text(
                 currentIndex == slidess.length - 1 ? "GetStarted" : "Next page",
