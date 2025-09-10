@@ -10,6 +10,16 @@ class Registration extends StatefulWidget {
 }
 
 class _RegistrationState extends State<Registration> {
+  final TextEditingController _emailController = new TextEditingController();
+  final TextEditingController _usernameController = new TextEditingController();
+  final TextEditingController _phoneNumberController =
+      new TextEditingController();
+  final TextEditingController _nidaNumberController =
+      new TextEditingController();
+  final TextEditingController _registrationController =
+      new TextEditingController();
+  final TextEditingController _passwordController = new TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -35,6 +45,7 @@ class _RegistrationState extends State<Registration> {
                 Padding(
                   padding: EdgeInsets.all(16),
                   child: TextFormField(
+                    controller: _emailController,
                     validator: MultiValidator([
                       RequiredValidator(errorText: "Enter your Email"),
                       MinLengthValidator(
@@ -58,6 +69,7 @@ class _RegistrationState extends State<Registration> {
                 Padding(
                   padding: EdgeInsets.all(16),
                   child: TextFormField(
+                    controller: _usernameController,
                     validator: MultiValidator([
                       RequiredValidator(errorText: "Enter the username"),
                       MinLengthValidator(
@@ -81,6 +93,7 @@ class _RegistrationState extends State<Registration> {
                 Padding(
                   padding: EdgeInsets.all(16),
                   child: TextFormField(
+                    controller: _phoneNumberController,
                     validator: MultiValidator([
                       RequiredValidator(errorText: "Enter the phone number"),
                       MinLengthValidator(10, errorText: "Enter ten numbers"),
@@ -105,6 +118,7 @@ class _RegistrationState extends State<Registration> {
                 Padding(
                   padding: EdgeInsets.all(16),
                   child: TextFormField(
+                    controller: _nidaNumberController,
                     validator: MultiValidator([
                       RequiredValidator(errorText: "Enter the Nida number"),
                       MinLengthValidator(
@@ -128,6 +142,7 @@ class _RegistrationState extends State<Registration> {
                 Padding(
                   padding: EdgeInsets.all(16),
                   child: TextFormField(
+                    controller: _registrationController,
                     validator: MultiValidator([
                       RequiredValidator(
                         errorText: "Enter the registration number",
@@ -152,6 +167,7 @@ class _RegistrationState extends State<Registration> {
                 Padding(
                   padding: EdgeInsets.all(16),
                   child: TextFormField(
+                    controller: _passwordController,
                     validator: MultiValidator([
                       RequiredValidator(errorText: "Enter the valid password"),
                       MinLengthValidator(
