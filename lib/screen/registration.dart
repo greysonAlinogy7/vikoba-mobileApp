@@ -234,7 +234,6 @@ class _RegistrationState extends State<Registration> {
                     ),
                   ),
                 ),
-                Center(child: Container(child: Text("login"))),
               ],
             ),
           ),
