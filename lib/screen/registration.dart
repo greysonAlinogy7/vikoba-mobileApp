@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:vikoba_mobileapp/screen/LoginScreen.dart';
 
 class Registration extends StatefulWidget {
   const Registration({super.key});
@@ -171,6 +172,32 @@ class _RegistrationState extends State<Registration> {
                     ),
                   ),
                 ),
+                Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        "I have account",
+                        style: TextStyle(fontSize: 16, color: Colors.black),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute<void>(
+                              builder: (context) => const Loginscreen(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          "Login",
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 Center(
                   child: Padding(
                     padding: EdgeInsets.all(16),
@@ -186,7 +213,7 @@ class _RegistrationState extends State<Registration> {
 
                           child: Text(
                             "Register",
-                            style: TextStyle(fontSize: 25),
+                            style: TextStyle(fontSize: 15),
                           ),
                         ),
                       ),
