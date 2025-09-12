@@ -6,7 +6,8 @@ import '../model/User.dart';
 
 class Service {
   // API base URL (change depending on platform)
-  static const String _baseUrl = 'http://172.16.130.247:8080/api/users';
+  static const String _baseUrl = 'http://172.16.130.183:8080/auth/register';
+
 
   /// Create a new user
   Future<User?> createUser(Map<String, dynamic> userData) async {

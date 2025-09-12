@@ -58,7 +58,10 @@ class _RegistrationState extends State<Registration> {
         "password": _passwordController.text,
       };
 
+
+
       final User? result = await _service.createUser(userData);
+
 
       if (result != null) {
         ScaffoldMessenger.of(context).showSnackBar(
