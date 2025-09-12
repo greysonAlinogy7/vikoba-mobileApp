@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:vikoba_mobileapp/model/SliderModel.dart';
 import 'package:vikoba_mobileapp/screen/LoginScreen.dart';
 
+import '../widget/background.dart';
+
 class Onboardingscreen extends StatefulWidget {
   const Onboardingscreen({super.key});
 
@@ -33,6 +35,7 @@ class _OnboardingscreenState extends State<Onboardingscreen> {
     return Scaffold(
       body: Stack(
         children: [
+          SizedBox.expand(child: CustomPaint(painter: GridBackgroundPainter())),
           PageView.builder(
             itemCount: slidess.length,
             onPageChanged: (int index) {

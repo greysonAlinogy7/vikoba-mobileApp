@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
-import 'package:vikoba_mobileapp/screen/registration.dart';
+
+import '../screen/registration.dart';
+import '../widget/background.dart';
+import 'forgotpassword.dart';
 
 class Loginscreen extends StatefulWidget {
   const Loginscreen({super.key});
@@ -10,126 +13,197 @@ class Loginscreen extends StatefulWidget {
 }
 
 class _LoginscreenState extends State<Loginscreen> {
-  final _formkey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  bool _obscurePassword = true;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Form(
-            key: _formkey,
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Center(
-                    child: Container(
-                      height: 200,
-                      width: 200,
-                      child: Image.asset("assets/login.png"),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(16),
-                  child: TextFormField(
-                    validator: MultiValidator([
-                      RequiredValidator(errorText: "Enter your Email"),
-                      MinLengthValidator(
-                        10,
-                        errorText: "include @ sign in your input text",
-                      ),
-                    ]),
-                    decoration: InputDecoration(
-                      hintText: "Enter email",
-                      labelText: "Email",
-                      prefixIcon: Icon(Icons.email),
-                      errorStyle: TextStyle(fontSize: 18.0),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red),
-                        borderRadius: BorderRadius.all(Radius.circular(9)),
+      body: SizedBox.expand(
+        // ✅ ensures full-screen
+        child: CustomPaint(
+          painter: GridBackgroundPainter(), // ✅ grid covers entire screen
+          child: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Logo
+                    Hero(
+                      tag: 'logo',
+                      child: Image.asset(
+                        "assets/login.png",
+                        height: MediaQuery.of(context).size.height * 0.25,
+                        fit: BoxFit.contain,
                       ),
                     ),
-                  ),
-                ),
+                    const SizedBox(height: 32),
 
-                Padding(
-                  padding: EdgeInsets.all(16),
-                  child: TextFormField(
-                    validator: MultiValidator([
-                      RequiredValidator(errorText: "Enter the valid password"),
-                      MinLengthValidator(
-                        10,
-                        errorText:
-                            "password should contain upper case and special character",
-                      ),
-                    ]),
-                    decoration: InputDecoration(
-                      hintText: "password",
-                      labelText: "password",
-                      prefixIcon: Icon(Icons.lock),
-                      errorStyle: TextStyle(fontSize: 18.0),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red),
-                        borderRadius: BorderRadius.all(Radius.circular(9)),
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        "I don't have account?",
-                        style: TextStyle(fontSize: 16, color: Colors.black),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute<void>(
-                              builder: (context) => const Registration(),
-                            ),
-                          );
-                        },
-                        child: Text(
-                          "SignUp",
-                          style: TextStyle(color: Colors.blue),
+                    // Email Field
+                    TextFormField(
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      validator: MultiValidator([
+                        RequiredValidator(errorText: "Enter your Email"),
+                        EmailValidator(errorText: "Enter a valid email"),
+                      ]),
+                      decoration: const InputDecoration(
+                        labelText: "Email",
+                        hintText: "Enter email",
+                        prefixIcon: Icon(Icons.email),
+                        errorStyle: TextStyle(fontSize: 16),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(9)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blue),
+                          borderRadius: BorderRadius.all(Radius.circular(9)),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-                Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Container(
-                      child: SizedBox(
-                        width: 700,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (_formkey.currentState!.validate()) {
-                              print("form validated");
-                            }
-                          },
+                    ),
+                    const SizedBox(height: 16),
 
-                          child: Text(
-                            "Login",
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
+                    // Password Field
+                    TextFormField(
+                      controller: _passwordController,
+                      obscureText: _obscurePassword,
+                      validator: MultiValidator([
+                        RequiredValidator(errorText: "Enter a valid password"),
+                        MinLengthValidator(
+                          8,
+                          errorText: "Minimum 8 characters required",
+                        ),
+                        PatternValidator(
+                          r'^(?=.*[A-Z])(?=.*[!@#$&*])',
+                          errorText:
+                              "Must include uppercase & special character",
+                        ),
+                      ]),
+                      decoration: InputDecoration(
+                        labelText: "Password",
+                        hintText: "Enter password",
+                        prefixIcon: const Icon(Icons.lock),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscurePassword
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _obscurePassword = !_obscurePassword;
+                            });
+                          },
+                        ),
+                        errorStyle: const TextStyle(fontSize: 16),
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(9)),
+                        ),
+                        focusedBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blue),
+                          borderRadius: BorderRadius.all(Radius.circular(9)),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const Forgotpassword(),
+                              ),
+                            );
+                          },
+                          child: const Text(
+                            "forgot password?",
+                            style: TextStyle(color: Colors.blue),
+                          ),
+                        ),
+                      ],
+                    ),
+                    // Signup Link
+                    const SizedBox(height: 24),
+
+                    // Login Button
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            print(
+                              "Email: ${_emailController.text}, "
+                              "Password: ${_passwordController.text}",
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Login successful!'),
+                              ),
+                            );
+                          }
+                        },
+
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.purple,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(9),
+                          ),
+                        ),
+
+                        child: const Text(
+                          "Login",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
                         ),
                       ),
                     ),
-                  ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        const Text(
+                          "Don't have  account?",
+                          style: TextStyle(fontSize: 16, color: Colors.black),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const Registration(),
+                              ),
+                            );
+                          },
+                          child: const Text(
+                            "Sign Up",
+                            style: TextStyle(color: Colors.blue),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),
