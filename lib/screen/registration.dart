@@ -35,7 +35,6 @@ class _RegistrationState extends State<Registration> {
     super.dispose();
   }
 
-  /// Helper to reduce boilerplate for input decoration
   InputDecoration _inputDecoration(String label, String hint, IconData icon) {
     return InputDecoration(
       labelText: label,
@@ -48,34 +47,34 @@ class _RegistrationState extends State<Registration> {
   }
 
   Future<void> _registerUser() async {
-    if (_formKey.currentState!.validate()) {
-      final userData = {
-        "email": _emailController.text,
-        "username": _usernameController.text,
-        "phone": _phoneNumberController.text,
-        "nida": _nidaNumberController.text,
-        "regNo": _registrationController.text,
-        "password": _passwordController.text,
-      };
+    if (!_formKey.currentState!.validate()) return;
 
+    final userData = {
+      "email": _emailController.text.trim(),
+      "username": _usernameController.text.trim(),
+      "phone": _phoneNumberController.text.trim(),
+      "nida": _nidaNumberController.text.trim(),
+      "regNo": _registrationController.text.trim(),
+      "password": _passwordController.text.trim(),
+    };
 
+    // Optional: pass an admin token if your backend requires it
+    final User? result = await _service.createUser(userData);
 
-      final User? result = await _service.createUser(userData);
-
-
-      if (result != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("✅ Registration successful")),
-        );
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const Loginscreen()),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Registration failed. Try again.")),
-        );
-      }
+    if (result != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("✅ Registration successful")),
+      );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const Loginscreen()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("❌ Registration failed. Check server logs."),
+        ),
+      );
     }
   }
 
@@ -96,8 +95,7 @@ class _RegistrationState extends State<Registration> {
             child: Form(
               key: _formKey,
               child: Column(
-                children: <Widget>[
-                  // Logo
+                children: [
                   Padding(
                     padding: const EdgeInsets.all(16),
                     child: SizedBox(
@@ -248,7 +246,6 @@ class _RegistrationState extends State<Registration> {
                   ),
 
                   // Register Button
-                  // full width
                   ElevatedButton(
                     onPressed: _registerUser,
                     style: ElevatedButton.styleFrom(

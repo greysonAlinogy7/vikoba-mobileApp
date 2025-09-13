@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:vikoba_mobileapp/screen/homescreen.dart';
+import 'package:vikoba_mobileapp/service/Service.dart';
 
 import '../screen/registration.dart';
 import '../widget/background.dart';
@@ -16,7 +18,10 @@ class _LoginscreenState extends State<Loginscreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final Service _authService = Service();
+
   bool _obscurePassword = true;
+  bool isLoading = false;
 
   @override
   void dispose() {
@@ -25,13 +30,48 @@ class _LoginscreenState extends State<Loginscreen> {
     super.dispose();
   }
 
+  Future<void> _login() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        isLoading = true;
+      });
+
+      try {
+        final result = await _authService.login(
+          _emailController.text.trim(),
+          _passwordController.text.trim(),
+        );
+
+        if (result != null) {
+          // Login successful, navigate to home/dashboard
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Homescreen()),
+          );
+        } else {
+          // Login failed
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Invalid email or password')),
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: $e')));
+      } finally {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SizedBox.expand(
-        // ✅ ensures full-screen
         child: CustomPaint(
-          painter: GridBackgroundPainter(), // ✅ grid covers entire screen
+          painter: GridBackgroundPainter(),
           child: SafeArea(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
@@ -54,7 +94,8 @@ class _LoginscreenState extends State<Loginscreen> {
                     // Email Field
                     TextFormField(
                       controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
+                      keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.next,
                       validator: MultiValidator([
                         RequiredValidator(errorText: "Enter your Email"),
                         EmailValidator(errorText: "Enter a valid email"),
@@ -79,6 +120,7 @@ class _LoginscreenState extends State<Loginscreen> {
                     TextFormField(
                       controller: _passwordController,
                       obscureText: _obscurePassword,
+                      textInputAction: TextInputAction.done,
                       validator: MultiValidator([
                         RequiredValidator(errorText: "Enter a valid password"),
                         MinLengthValidator(
@@ -116,9 +158,11 @@ class _LoginscreenState extends State<Loginscreen> {
                           borderRadius: BorderRadius.all(Radius.circular(9)),
                         ),
                       ),
+                      onFieldSubmitted: (_) => _login(),
                     ),
                     const SizedBox(height: 16),
 
+                    // Forgot Password
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -132,33 +176,19 @@ class _LoginscreenState extends State<Loginscreen> {
                             );
                           },
                           child: const Text(
-                            "forgot password?",
+                            "Forgot password?",
                             style: TextStyle(color: Colors.blue),
                           ),
                         ),
                       ],
                     ),
-                    // Signup Link
                     const SizedBox(height: 24),
 
                     // Login Button
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            print(
-                              "Email: ${_emailController.text}, "
-                              "Password: ${_passwordController.text}",
-                            );
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Login successful!'),
-                              ),
-                            );
-                          }
-                        },
-
+                        onPressed: isLoading ? null : _login,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.purple,
                           foregroundColor: Colors.white,
@@ -167,22 +197,27 @@ class _LoginscreenState extends State<Loginscreen> {
                             borderRadius: BorderRadius.circular(9),
                           ),
                         ),
-
-                        child: const Text(
-                          "Login",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
+                        child: isLoading
+                            ? const CircularProgressIndicator(
+                                color: Colors.white,
+                              )
+                            : const Text(
+                                "Login",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                       ),
                     ),
+                    const SizedBox(height: 16),
+
+                    // Signup Link
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Text(
-                          "Don't have  account?",
+                          "Don't have an account?",
                           style: TextStyle(fontSize: 16, color: Colors.black),
                         ),
                         TextButton(
