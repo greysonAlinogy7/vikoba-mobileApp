@@ -19,7 +19,7 @@ class AuthResponse {
 }
 
 class Service {
-  static const String _baseUrl = 'http://192.168.1.123:8080/auth';
+  static const String _baseUrl = 'http://172.16.130.178:8080/auth';
 
   /// Register a new user
   /// Optional token for admin-only registration

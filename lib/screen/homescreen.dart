@@ -22,7 +22,7 @@ class _HomescreenState extends State<Homescreen> {
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white10,
         elevation: 0,
-        selectedItemColor: Colors.black,
+        selectedItemColor: Colors.green,
         unselectedItemColor: Colors.grey,
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
@@ -33,7 +33,7 @@ class _HomescreenState extends State<Homescreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.local_atm_outlined),
-            label: "loan",
+            label: "mkopo",
           ),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "profile"),
           BottomNavigationBarItem(icon: Icon(Icons.settings), label: "setting"),

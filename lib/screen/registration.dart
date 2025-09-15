@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:vikoba_mobileapp/model/User.dart';
 import 'package:vikoba_mobileapp/screen/LoginScreen.dart';
 import 'package:vikoba_mobileapp/service/Service.dart';
+import 'package:vikoba_mobileapp/widget/appcolor.dart';
 
 import '../widget/background.dart';
 
@@ -218,7 +219,7 @@ class _RegistrationState extends State<Registration> {
                     children: [
                       const Text(
                         "I have an account",
-                        style: TextStyle(fontSize: 16),
+                        style: AppTextStyle.buttonText,
                       ),
                       TextButton(
                         onPressed: () {
@@ -236,14 +237,17 @@ class _RegistrationState extends State<Registration> {
                   ElevatedButton(
                     onPressed: _registerUser,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.purple,
+                      backgroundColor: AppColors.buttonColor,
                       foregroundColor: Colors.white,
                       minimumSize: const Size(double.infinity, 50),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                     ),
-                    child: const Text('Register'),
+                    child: const Text(
+                      'Register',
+                      style: AppTextStyle.buttonText,
+                    ),
                   ),
                 ],
               ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vikoba_mobileapp/widget/appcolor.dart';
 
 import '../widget/background.dart';
 
@@ -50,14 +51,17 @@ class Forgotpassword extends StatelessWidget {
                     print('Reset password for ${_emailController.text}');
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.purple,
+                    backgroundColor: AppColors.buttonColor,
                     foregroundColor: Colors.white,
                     minimumSize: const Size(double.infinity, 50),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
-                  child: const Text('Reset password'),
+                  child: const Text(
+                    'Reset password',
+                    style: AppTextStyle.buttonText,
+                  ),
                 ),
               ],
             ),

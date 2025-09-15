@@ -5,6 +5,7 @@ import 'package:vikoba_mobileapp/screen/homescreen.dart';
 import 'package:vikoba_mobileapp/service/Service.dart';
 
 import '../screen/registration.dart';
+import '../widget/appcolor.dart';
 import '../widget/background.dart';
 import 'forgotpassword.dart';
 
@@ -179,7 +180,7 @@ class _LoginscreenState extends State<Loginscreen> {
                       child: ElevatedButton(
                         onPressed: isLoading ? null : _login,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.purple,
+                          backgroundColor: AppColors.buttonColor,
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
@@ -192,10 +193,7 @@ class _LoginscreenState extends State<Loginscreen> {
                               )
                             : const Text(
                                 "Login",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: AppTextStyle.buttonText,
                               ),
                       ),
                     ),
@@ -207,7 +205,7 @@ class _LoginscreenState extends State<Loginscreen> {
                       children: [
                         const Text(
                           "Don't have an account?",
-                          style: TextStyle(fontSize: 16, color: Colors.black),
+                          style: AppTextStyle.buttonText,
                         ),
                         TextButton(
                           onPressed: () {
