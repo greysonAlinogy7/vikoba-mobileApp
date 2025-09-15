@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:get/get.dart';
 import 'package:vikoba_mobileapp/screen/homescreen.dart';
 import 'package:vikoba_mobileapp/service/Service.dart';
 
@@ -44,20 +45,13 @@ class _LoginscreenState extends State<Loginscreen> {
 
         if (result != null) {
           // Login successful, navigate to home/dashboard
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => Homescreen()),
-          );
+          Get.to(Homescreen());
         } else {
           // Login failed
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Invalid email or password')),
-          );
+          Get.snackbar("login", "login failed");
         }
       } catch (e) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error: $e')));
+        Get.snackbar("login", "login failed");
       } finally {
         setState(() {
           isLoading = false;
@@ -168,12 +162,7 @@ class _LoginscreenState extends State<Loginscreen> {
                       children: [
                         TextButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const Forgotpassword(),
-                              ),
-                            );
+                            Get.to(Forgotpassword());
                           },
                           child: const Text(
                             "Forgot password?",
@@ -222,12 +211,7 @@ class _LoginscreenState extends State<Loginscreen> {
                         ),
                         TextButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const Registration(),
-                              ),
-                            );
+                            Get.to(Registration());
                           },
                           child: const Text(
                             "Sign Up",

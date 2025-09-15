@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:get/get.dart';
 import 'package:vikoba_mobileapp/model/User.dart';
 import 'package:vikoba_mobileapp/screen/LoginScreen.dart';
 import 'package:vikoba_mobileapp/service/Service.dart';
@@ -62,19 +63,10 @@ class _RegistrationState extends State<Registration> {
     final User? result = await _service.createUser(userData);
 
     if (result != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("✅ Registration successful")),
-      );
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const Loginscreen()),
-      );
+      Get.snackbar("registration", "your are succesfully registered");
+      Get.to(Loginscreen());
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("❌ Registration failed. Check server logs."),
-        ),
-      );
+      Get.snackbar("validation failed", "check server logs");
     }
   }
 
@@ -230,12 +222,7 @@ class _RegistrationState extends State<Registration> {
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const Loginscreen(),
-                            ),
-                          );
+                          Get.to(Loginscreen());
                         },
                         child: const Text(
                           "Login",
