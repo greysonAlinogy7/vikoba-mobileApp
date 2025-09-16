@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vikoba_mobileapp/screen/profilescreen.dart';
 
 class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
@@ -11,7 +12,7 @@ class _HomescreenState extends State<Homescreen> {
   static const List<Widget> _selectedPage = [
     Icon(Icons.payment, size: 150),
     Icon(Icons.local_atm_outlined, size: 150),
-    Icon(Icons.person, size: 150),
+    Profilescreen(),
     Icon(Icons.settings, size: 150),
   ];
   int _selectedIndex = 0;
