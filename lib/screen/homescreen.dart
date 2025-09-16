@@ -8,6 +8,12 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
+  static const List<Widget> _selectedPage = [
+    Icon(Icons.payment, size: 150),
+    Icon(Icons.local_atm_outlined, size: 150),
+    Icon(Icons.person, size: 150),
+    Icon(Icons.settings, size: 150),
+  ];
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
@@ -39,6 +45,7 @@ class _HomescreenState extends State<Homescreen> {
           BottomNavigationBarItem(icon: Icon(Icons.settings), label: "setting"),
         ],
       ),
+      body: Center(child: _selectedPage.elementAt(_selectedIndex)),
     );
   }
 }
